@@ -1,0 +1,52 @@
+//   try {
+//     const { name, price, description } = req.body;
+//     if (req.file) {
+//       let tmp_path = req.file.path;
+//       let originalExt =
+//         req.file.originalName.split(".")[
+//           req.file.originalName.split(".").length - 1
+//         ];
+//       let fileName = req.filename + "." + originalExt;
+//       let targetPath = path.resolve(
+//         config.rootPath,
+//         `images/products/${fileName}`
+//       );
+
+//       const src = fs.createReadStream(tmp_path);
+//       const dest = fs.createWriteStream(targetPath);
+
+//       src.pipe(dest);
+
+//       src.on("end", async () => {
+//         try {
+//           const product = new Product({
+//             name,
+//             price,
+//             description,
+//             image_url: fileName,
+//           });
+//           await product.save();
+//           return res
+//             .status(201)
+//             .json({ message: "succes create data", result: product });
+//         } catch (error) {
+//           fs.unlinkSync(targetPath);
+//           if (err && err.name == "ValidationError") {
+//             return res.status(400).json(err);
+//           }
+//           next(err);
+//         }
+//       });
+//       src.on("error", async () => {
+//         next();
+//       });
+//     } else {
+//       const product = new Product(req.body);
+//       await product.save();
+//       return res
+//         .status(201)
+//         .json({ message: "succes create data", result: req.body });
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
