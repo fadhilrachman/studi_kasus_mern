@@ -1,14 +1,77 @@
-const path = require("path");
-const fs = require("fs");
 const Product = require("./model");
-const config = require("../config");
+const fs = require("fs");
 
 const createData = async (req, res, next) => {
-  // Dapatkan informasi mengenai file yang di-upload
-  const file = req.file.path;
-
-  // Lakukan operasi yang diperlukan dengan file tersebut
-  res.json(file);
+  const { name, description, price } = req.body;
+  try {
+    if (req.file) {
+      const file = req.file.filename;
+      const result = await Product.create({
+        name,
+        description,
+        price,
+        image_url: file,
+      });
+      res.status(201).json({ message: "succes create data", result });
+    } else {
+      const result = await Product.create({
+        name,
+        description,
+        price,
+      });
+      res.status(201).json({ message: "succes create data", result });
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
 };
 
-module.exports = { createData };
+const getData = async (req, res, next) => {
+  const { limit = 0, page = 0 } = req.query;
+  try {
+    const result = await Product.find().skip(page).limit(limit);
+    res.status(200).json({ message: "succes get data", result });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+const updateData = async (req, res) => {
+  const { id } = req.params;
+  const { name, description, price } = req.body;
+
+  try {
+    // if (req.file) {
+    // const file = req.file.path;
+    const result = await Product.findById(id);
+    // console.log(result);
+    const img = path.join("image/products", result.image_url);
+    console.log(img);
+    // fs.unlink(img, (err1) => {
+    //   if (err1) {
+    //     console.error(err1);
+    //   } else {
+    //     console.log("File berhasil dihapus");
+    //   }
+    // });
+
+    res.status(201).json({ message: "succes update data", result });
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+const deleteData = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await Product.findByIdAndDelete(id);
+    if (!result) {
+      return res.status(404).json({ message: "id error" });
+    }
+    res.status(200).json({ message: "succes delete data" });
+  } catch (error) {}
+};
+
+module.exports = { createData, getData, updateData, deleteData };

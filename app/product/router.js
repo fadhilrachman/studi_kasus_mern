@@ -2,7 +2,7 @@ const express = require("express");
 const router = express();
 const multer = require("multer");
 const os = require("os");
-const { createData } = require("./controller");
+const { createData, getData, updateData, deleteData } = require("./controller");
 
 const fileFilter = (req, file, cb) => {
   if (
@@ -30,7 +30,11 @@ const upload = multer({
   storage: fileStorage,
   fileFilter,
 });
+
+router.get("/products", getData);
 router.post("/products", upload.single("image"), createData);
+router.get("/products/:id", updateData);
+router.delete("/products/:id", deleteData);
 
 module.exports = router;
 
