@@ -7,6 +7,7 @@ const multer = require("multer");
 const app = express();
 const productsRouter = require("./app/product/router");
 const categoriesRouter = require("./app/categories/router");
+const tagsRouter = require("./app/tags/router");
 
 app.use(cors({ allowedHeaders: "*" }));
 
@@ -16,6 +17,7 @@ app.use(cookieParser());
 
 app.use(productsRouter);
 app.use(categoriesRouter);
+app.use(tagsRouter);
 
 // error handler
 
