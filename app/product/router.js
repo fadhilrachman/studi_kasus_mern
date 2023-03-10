@@ -3,7 +3,7 @@ const router = express();
 const multer = require("multer");
 const os = require("os");
 const { createData, getData, updateData, deleteData } = require("./controller");
-
+require("dotenv").config();
 const fileFilter = (req, file, cb) => {
   if (
     file.mimetype == "image/png" ||
@@ -19,7 +19,7 @@ const fileFilter = (req, file, cb) => {
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     console.log(file);
-    cb(null, "images/products");
+    cb(null, "public");
   },
   filename: (req, file, cb) => {
     cb(null, new Date().getTime() + "-" + file.originalname);
@@ -33,7 +33,7 @@ const upload = multer({
 
 router.get("/products", getData);
 router.post("/products", upload.single("image"), createData);
-router.get("/products/:id", updateData);
+router.put("/products/:id", upload.single("image"), updateData);
 router.delete("/products/:id", deleteData);
 
 module.exports = router;

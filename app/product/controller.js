@@ -1,5 +1,6 @@
 const Product = require("./model");
 const fs = require("fs");
+const path = require("path");
 
 const createData = async (req, res, next) => {
   const { name, description, price } = req.body;
@@ -43,21 +44,33 @@ const updateData = async (req, res) => {
   const { name, description, price } = req.body;
 
   try {
-    // if (req.file) {
-    // const file = req.file.path;
-    const result = await Product.findById(id);
-    // console.log(result);
-    const img = path.join("image/products", result.image_url);
-    console.log(img);
-    // fs.unlink(img, (err1) => {
-    //   if (err1) {
-    //     console.error(err1);
-    //   } else {
-    //     console.log("File berhasil dihapus");
-    //   }
-    // });
+    console.log(req.file);
+    const prod = await Product.findById(id);
+    if (!prod) return res.status(404).json({ message: "id error" });
 
-    res.status(201).json({ message: "succes update data", result });
+    if (req.file) {
+      const file = req.file.filename;
+      const img = path.join("./public", prod.image_url);
+      fs.unlink(img, (err1) => {
+        if (err1) {
+          console.error(err1);
+        } else {
+          console.log("File berhasil dihapus");
+        }
+      });
+      prod.name = name;
+      prod.description = description;
+      prod.price = price;
+      prod.image_url = file;
+      prod.save();
+      res.status(200).json({ message: "succes update data", result: prod });
+    } else {
+      prod.name = name;
+      prod.description = description;
+      prod.price = price;
+      prod.save();
+      res.status(200).json({ message: "succes update data", result: prod });
+    }
   } catch (error) {
     res.json(error);
   }
@@ -67,6 +80,15 @@ const deleteData = async (req, res) => {
   const { id } = req.params;
   try {
     const result = await Product.findByIdAndDelete(id);
+    const img = path.join("./public", result.image_url);
+    console.log(img);
+    fs.unlink(img, (err1) => {
+      if (err1) {
+        console.error(err1);
+      } else {
+        console.log("File berhasil dihapus");
+      }
+    });
     if (!result) {
       return res.status(404).json({ message: "id error" });
     }
@@ -75,3 +97,4 @@ const deleteData = async (req, res) => {
 };
 
 module.exports = { createData, getData, updateData, deleteData };
+// resutl.image_url.replace(" ","%20")
