@@ -16,6 +16,16 @@ const productSchema = mongoose.Schema(
       default: 0,
     },
     image_url: String,
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Categories",
+    },
+    tag: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tags",
+      },
+    ],
   },
   {
     timestamps: true,

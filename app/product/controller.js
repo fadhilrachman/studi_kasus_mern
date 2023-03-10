@@ -3,7 +3,8 @@ const fs = require("fs");
 const path = require("path");
 
 const createData = async (req, res, next) => {
-  const { name, description, price } = req.body;
+  const { name, description, price, category, tag } = req.body;
+
   try {
     if (req.file) {
       const file = req.file.filename;
@@ -12,6 +13,8 @@ const createData = async (req, res, next) => {
         description,
         price,
         image_url: file,
+        category: category && category,
+        tag: tag && tag,
       });
       res.status(201).json({ message: "succes create data", result });
     } else {
@@ -19,6 +22,8 @@ const createData = async (req, res, next) => {
         name,
         description,
         price,
+        category: category && category,
+        tag: tag && tag,
       });
       res.status(201).json({ message: "succes create data", result });
     }
@@ -31,7 +36,12 @@ const createData = async (req, res, next) => {
 const getData = async (req, res, next) => {
   const { limit = 0, page = 0 } = req.query;
   try {
-    const result = await Product.find().skip(page).limit(limit);
+    const result = await Product.find()
+      .skip(page)
+      .limit(limit)
+      .populate("category")
+      .populate("tag");
+
     res.status(200).json({ message: "succes get data", result });
   } catch (error) {
     console.log(error);
@@ -68,6 +78,7 @@ const updateData = async (req, res) => {
       prod.name = name;
       prod.description = description;
       prod.price = price;
+      // prod.image_url = prod.image_url;
       prod.save();
       res.status(200).json({ message: "succes update data", result: prod });
     }
