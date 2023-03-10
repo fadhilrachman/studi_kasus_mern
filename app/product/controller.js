@@ -34,15 +34,27 @@ const createData = async (req, res, next) => {
 };
 
 const getData = async (req, res, next) => {
-  const { limit = 0, page = 0 } = req.query;
+  const { limit = 0, page = 0, category = "", tag = [] } = req.query;
+
+  let filter = {};
+
+  if (category) {
+    filter = { ...filter, category };
+  }
+  console.log(tag.length);
+  if (tag[0] != "") {
+    filter = { ...filter, tag: { $in: tag } };
+  }
+
   try {
-    const result = await Product.find()
+    const count = await Product.find().countDocuments();
+    const result = await Product.find(filter)
       .skip(page)
       .limit(limit)
       .populate("category")
       .populate("tag");
 
-    res.status(200).json({ message: "succes get data", result });
+    res.status(200).json({ message: "succes get data", count, result });
   } catch (error) {
     console.log(error);
     next(error);
@@ -90,7 +102,7 @@ const updateData = async (req, res) => {
 const deleteData = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await Product.findByIdAndDelete(id);
+    const result = await Product.findByIdAndDelete();
     const img = path.join("./public", result.image_url);
     console.log(img);
     fs.unlink(img, (err1) => {
