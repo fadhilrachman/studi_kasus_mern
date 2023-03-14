@@ -42,7 +42,7 @@ const getData = async (req, res, next) => {
     filter = { ...filter, category };
   }
   console.log(tag.length);
-  if (tag[0] != "") {
+  if (tag[0] != "" && !tag) {
     filter = { ...filter, tag: { $in: tag } };
   }
 
@@ -54,7 +54,7 @@ const getData = async (req, res, next) => {
       .populate("category")
       .populate("tag");
 
-    res.status(200).json({ message: "succes get data", count, result });
+    res.status(200).json({ message: "succes get data", count, result, filter });
   } catch (error) {
     console.log(error);
     next(error);

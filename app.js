@@ -9,6 +9,7 @@ const productsRouter = require("./app/product/router");
 const categoriesRouter = require("./app/categories/router");
 const tagsRouter = require("./app/tags/router");
 const userRouter = require("./app/user/router");
+const addressRouter = require("./app/deliveryAddres/router");
 app.use(cors({ allowedHeaders: "*" }));
 
 app.use(express.json());
@@ -19,6 +20,7 @@ app.use(cookieParser());
 app.use(productsRouter);
 app.use(userRouter);
 app.use(categoriesRouter);
+app.use(addressRouter);
 app.use(tagsRouter);
 
 // error handler
