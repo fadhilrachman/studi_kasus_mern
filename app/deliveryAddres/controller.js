@@ -32,7 +32,7 @@ const createData = async (req, res, next) => {
 const deleteData = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const result = await DelivelyAddress.findByIdAndDelete;
+    const result = await DelivelyAddress.findByIdAndDelete(id);
     if (!result) return res.status(404).json({ message: "id error" });
 
     res.status(200).json({ message: "succes delete data" });

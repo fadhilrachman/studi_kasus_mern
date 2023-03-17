@@ -7,7 +7,8 @@ const createData = async (req, res, next) => {
 
   try {
     if (req.file) {
-      const file = req.file.filename;
+      const file = req.file.path;
+
       const result = await Product.create({
         name,
         description,
@@ -49,12 +50,13 @@ const getData = async (req, res, next) => {
   try {
     const count = await Product.find().countDocuments();
     const result = await Product.find(filter)
+      .select("-createdAt -updatedAt")
       .skip(page)
       .limit(limit)
       .populate("category")
       .populate("tag");
 
-    res.status(200).json({ message: "succes get data", count, result, filter });
+    res.status(200).json({ message: "succes get data", count, result });
   } catch (error) {
     console.log(error);
     next(error);
