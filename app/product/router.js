@@ -4,6 +4,8 @@ const multer = require("multer");
 const os = require("os");
 const { createData, getData, updateData, deleteData } = require("./controller");
 require("dotenv").config();
+const verifyToken = require("../../utils/midleware");
+
 const fileFilter = (req, file, cb) => {
   if (
     file.mimetype == "image/png" ||
@@ -31,7 +33,7 @@ const upload = multer({
   fileFilter,
 });
 
-router.get("/products", getData);
+router.get("/products", verifyToken, getData);
 router.post("/products", upload.single("image"), createData);
 router.put("/products/:id", upload.single("image"), updateData);
 router.delete("/products/:id", deleteData);
