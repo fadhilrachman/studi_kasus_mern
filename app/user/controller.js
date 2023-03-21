@@ -63,7 +63,6 @@ const login = (req, res) => {
   try {
     passport.authenticate("local", async (err, user) => {
       if (user) {
-        const userObj = user.toObject();
         console.log("ini user baru ", user);
 
         const token = await jwt.sign(

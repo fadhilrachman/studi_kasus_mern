@@ -6,6 +6,7 @@ const {
   deleteData,
   updateData,
 } = require("./controller");
+const policyCheck = require("../../utils/authorization");
 
 router.get("/address", getAllData);
 router.post("/address", createData);

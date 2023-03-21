@@ -19,10 +19,10 @@ app.use(express.urlencoded({ extended: false }));
 // app.use(cookieParser());
 
 app.use(userRouter);
+app.use(addressRouter);
 app.use(verifyToken);
 app.use(productsRouter);
 app.use(categoriesRouter);
-app.use(addressRouter);
 app.use(tagsRouter);
 
 // error handler

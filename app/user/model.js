@@ -17,10 +17,6 @@ const userSchema = mongoose.Schema(
       type: String,
       unique: true,
       required: true,
-      //   validate: {
-      //     validator: (v) => {},
-      //     message: (props) => `${props.value} bukan alamat email yang valid!`,
-      //   },
     },
     role: {
       type: String,
