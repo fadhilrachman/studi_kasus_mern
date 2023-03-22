@@ -20,10 +20,10 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(userRouter);
 app.use(addressRouter);
-app.use(verifyToken);
 app.use(productsRouter);
 app.use(categoriesRouter);
 app.use(tagsRouter);
+// app.use(verifyToken);
 
 // error handler
 
