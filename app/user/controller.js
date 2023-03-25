@@ -85,6 +85,26 @@ const login = (req, res) => {
   }
 };
 
+const logout = async (req, res, next) => {
+  const token = req.headers["authorization"];
+  try {
+    await jwt.verify(token, process.env.refToken, async (err, decode) => {
+      console.log("ini error : ", err);
+      console.log(decode);
+      const user = await User.findOneAndUpdate(
+        { email: decode.email },
+        { token: null },
+        { new: true }
+      );
+      res.clearCookie("token");
+      res.json(user);
+    });
+    // await User.findOneAndUpdate({ token: null });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getData = async (req, res, next) => {
   try {
     const result = await User.find();
@@ -94,4 +114,4 @@ const getData = async (req, res, next) => {
   }
 };
 
-module.exports = { register, getData, login };
+module.exports = { register, getData, login, logout };
