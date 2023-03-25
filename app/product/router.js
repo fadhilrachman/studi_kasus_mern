@@ -33,11 +33,11 @@ const upload = multer({
   fileFilter,
 });
 
-router.get("/products", policyCheck("view", "product"), getData);
+router.get("/products", getData);
 router.post("/products", upload.single("image"), createData);
 router.put("/products/:id", upload.single("image"), updateData);
 router.delete("/products/:id", deleteData);
 
 module.exports = router;
-
+// policyCheck("view", "product")
 //   multer({ dest: os.tmpdir() }).single("image"),

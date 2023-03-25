@@ -106,7 +106,19 @@ const logout = async (req, res, next) => {
 };
 
 const getData = async (req, res, next) => {
+  const { isLogin } = req.query;
+  const token = req.headers["authorization"];
   try {
+    if (isLogin) {
+      await jwt.verify(token, process.env.refToken, async (err, decode) => {
+        if (err) return res.sendStatus(403);
+        console.log(decode);
+        const result = await User.findOne({ email: decode.email }).select(
+          "email username role"
+        );
+        return res.status(200).json({ message: "succes get data", result });
+      });
+    }
     const result = await User.find();
     res.status(200).json({ message: "succes get data", result });
   } catch (error) {
