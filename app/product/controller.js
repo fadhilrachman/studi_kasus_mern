@@ -42,11 +42,11 @@ const getData = async (req, res, next) => {
   if (category) {
     filter = { ...filter, category };
   }
-  console.log(tag.length);
-  if (tag[0] != "" && !tag) {
+  if (tag.length) {
     filter = { ...filter, tag: { $in: tag } };
   }
-
+  console.log(tag);
+  console.log(filter);
   try {
     const count = await Product.find().countDocuments();
     const result = await Product.find(filter)

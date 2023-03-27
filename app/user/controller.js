@@ -88,15 +88,19 @@ const login = (req, res) => {
 const logout = async (req, res, next) => {
   const token = req.headers["authorization"];
   try {
+    if (token == null) return res.sendStatus(401);
+
     await jwt.verify(token, process.env.refToken, async (err, decode) => {
+      if (err) return res.sendStatus(403);
       console.log("ini error : ", err);
+      console.log("ini token", token);
       console.log(decode);
       const user = await User.findOneAndUpdate(
         { email: decode.email },
         { token: null },
         { new: true }
       );
-      res.clearCookie("token");
+      await res.clearCookie("token");
       res.json(user);
     });
     // await User.findOneAndUpdate({ token: null });

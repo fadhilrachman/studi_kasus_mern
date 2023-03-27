@@ -2,7 +2,9 @@ const { Ability, AbilityBuilder } = require("@casl/ability");
 const User = require("../app/user/model");
 
 const policies = {
-  user(user, { can }) {},
+  user(user, { can }) {
+    
+  },
 };
 
 const policyFor = (user) => {
