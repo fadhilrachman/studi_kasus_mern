@@ -3,7 +3,10 @@ const User = require("../app/user/model");
 
 const policies = {
   user(user, { can }) {
-    
+    can("view", "category");
+  },
+  admin(user, { can }) {
+    can("manage", "all");
   },
 };
 

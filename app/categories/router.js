@@ -6,9 +6,10 @@ const {
   deleteData,
   updateData,
 } = require("./controller");
+const policyCheck = require("../../utils/authorization");
 
-router.get("/categories", getAllData);
-router.post("/categories", createData);
+router.get("/categories", policyCheck("view", "category"), getAllData);
+router.post("/categories", policyCheck("create", "category"), createData);
 router.put("/categories/:id", updateData);
 router.delete("/categories/:id", deleteData);
 

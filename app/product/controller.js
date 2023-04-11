@@ -68,7 +68,6 @@ const updateData = async (req, res) => {
   const { name, description, price } = req.body;
 
   try {
-    console.log(req.file);
     const prod = await Product.findById(id);
     if (!prod) return res.status(404).json({ message: "id error" });
 

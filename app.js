@@ -10,6 +10,7 @@ const categoriesRouter = require("./app/categories/router");
 const tagsRouter = require("./app/tags/router");
 const userRouter = require("./app/user/router");
 const addressRouter = require("./app/deliveryAddres/router");
+const cartRouter = require("./app/cart/router");
 const verifyToken = require("./utils/midleware");
 app.use(cors({ allowedHeaders: "*" }));
 
@@ -19,11 +20,12 @@ app.use(express.urlencoded({ extended: false }));
 // app.use(cookieParser());
 
 app.use(userRouter);
-app.use(addressRouter);
 app.use(productsRouter);
 app.use(categoriesRouter);
 app.use(tagsRouter);
+app.use(cartRouter);
 app.use(verifyToken);
+app.use(addressRouter);
 
 // error handler
 
