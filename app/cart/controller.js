@@ -33,6 +33,7 @@ const createData = async (req, res, next) => {
 
 const deleteData = async (req, res, next) => {
   const id = req.body.id;
+  console.log({ id });
   try {
     const result = await Cart.deleteMany({ _id: { $in: id } });
     if (result.deletedCount == 0)

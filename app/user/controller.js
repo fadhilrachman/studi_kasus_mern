@@ -22,74 +22,51 @@ const register = async (req, res, next) => {
     res.json(error);
   }
 };
-passport.use(
-  new LocalStrategy(
-    { usernameField: "email" },
-    async (email, password, done) => {
-      // cek email
-      try {
-        const user = await User.findOne({ email });
-        if (!user) return done(null, false, "email tidak terdaftar");
 
-        // cek pasword
-        bcrypt.compare(password, user.password, (err, isMatch) => {
-          if (err) throw err;
-
-          if (isMatch) {
-            return done(null, user);
-          } else {
-            return done(null, false, { message: "password salah" });
-          }
-        });
-      } catch (error) {
-        done(error, null);
-      }
-      done();
-    }
-  )
-);
-passport.serializeUser(async function (user, done) {
-  done(null, user.id);
-});
-
-passport.deserializeUser(async function (id, done) {
-  User.findById(id, function (err, user) {
-    done(err, user);
-  });
-});
-
-const login = (req, res) => {
+const login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    passport.authenticate("local", async (err, user) => {
-      if (user) {
-        console.log("ini user baru ", user);
+    const checkUser = await User.findOne({ email });
 
+    if (!checkUser)
+      return res
+        .status(404)
+        .json({ message: "email belum terdaftar", error: "email" });
+
+    bcrypt.compare(password, checkUser?.password, async (err, isMatch) => {
+      console.log({ isMatch });
+      console.log({ err });
+
+      if (isMatch) {
         const token = await jwt.sign(
           { email, password },
           process.env.refToken,
-          {
-            expiresIn: "1d",
-          }
+          { expiresIn: "1d" }
+        );
+        const user = await User.findOneAndUpdate(
+          { email },
+          { token },
+          { new: true }
         );
         res.cookie("token", token, {
           httpOnly: true,
           maxAge: 24 * 60 * 60 * 1000,
         });
-        await User.findByIdAndUpdate(user._id, { token });
-        return res.status(200).json({ message: "succes login", token });
+        res.json({ message: "login success", token });
+      } else {
+        res.status(401).json({ message: "password error", error: "password" });
       }
-    })(req, res);
+    });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 const logout = async (req, res, next) => {
   const token = req.headers["authorization"];
   try {
+    console.log({ token });
     if (token == null) return res.sendStatus(401);
-
     await jwt.verify(token, process.env.refToken, async (err, decode) => {
       if (err) return res.sendStatus(403);
       console.log("ini error : ", err);
@@ -112,11 +89,12 @@ const logout = async (req, res, next) => {
 const getData = async (req, res, next) => {
   const { isLogin } = req.query;
   const token = req.headers["authorization"];
+  console.log({ token: process.env.refToken });
   try {
     if (isLogin) {
       await jwt.verify(token, process.env.refToken, async (err, decode) => {
-        if (err) return res.sendStatus(403);
-        console.log(decode);
+        console.log({ decode, token });
+        if (err) return res.status(403).json({ decode });
         const result = await User.findOne({ email: decode.email }).select(
           "email username role"
         );

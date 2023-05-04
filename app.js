@@ -20,10 +20,10 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 // app.use(cookieParser());
 
-app.use(userRouter);
 app.use(productsRouter);
 app.use(categoriesRouter);
 app.use(tagsRouter);
+app.use(userRouter);
 app.use(cartRouter);
 app.use(invoiceRouter);
 app.use(addressRouter);

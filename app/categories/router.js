@@ -8,8 +8,8 @@ const {
 } = require("./controller");
 const policyCheck = require("../../utils/authorization");
 
-router.get("/categories", policyCheck("view", "category"), getAllData);
-router.post("/categories", policyCheck("create", "category"), createData);
+router.get("/categories", getAllData);
+router.post("/categories", createData);
 router.put("/categories/:id", updateData);
 router.delete("/categories/:id", deleteData);
 

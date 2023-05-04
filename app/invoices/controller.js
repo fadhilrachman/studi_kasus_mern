@@ -10,8 +10,9 @@ const createInvoice = async (req, res, next) => {
 };
 
 const getInvoice = async (req, res, next) => {
+  const { user } = req.query;
   try {
-    const result = await Invoices.find()
+    const result = await Invoices.find({ user })
       .populate("adress")
       .populate("user")
       .populate({ path: "order.produk" });
