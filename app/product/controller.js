@@ -35,12 +35,15 @@ const createData = async (req, res, next) => {
 };
 
 const getData = async (req, res, next) => {
-  const { limit = 0, page = 0, category = "", tag = [] } = req.query;
+  const { limit = 0, page = 0, category = "", tag = [], search } = req.query;
 
   let filter = {};
 
   if (category) {
     filter = { ...filter, category };
+  }
+  if (search) {
+    filter = { ...filter, name: { $regex: search, $options: "i" } };
   }
   if (tag.length) {
     filter = { ...filter, tag: { $in: tag } };

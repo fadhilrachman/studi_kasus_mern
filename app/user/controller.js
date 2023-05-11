@@ -38,23 +38,16 @@ const login = async (req, res, next) => {
       console.log({ err });
 
       if (isMatch) {
-        const token = await jwt.sign(
-          { email, password },
-          process.env.refToken,
-          { expiresIn: "1d" }
-        );
-        const user = await User.findOneAndUpdate(
-          { email },
-          { token },
-          { new: true }
-        );
-        res.cookie("token", token, {
-          httpOnly: true,
-          maxAge: 24 * 60 * 60 * 1000,
+        const token = await jwt.sign({ email }, process.env.refToken, {
+          expiresIn: "1d",
         });
-        res.json({ message: "login success", token });
+        await User.findOneAndUpdate({ email }, { token }, { new: true });
+
+        return res.json({ message: "login success", token });
       } else {
-        res.status(401).json({ message: "password error", error: "password" });
+        return res
+          .status(401)
+          .json({ message: "password error", error: "password" });
       }
     });
   } catch (error) {
@@ -69,9 +62,7 @@ const logout = async (req, res, next) => {
     if (token == null) return res.sendStatus(401);
     await jwt.verify(token, process.env.refToken, async (err, decode) => {
       if (err) return res.sendStatus(403);
-      console.log("ini error : ", err);
-      console.log("ini token", token);
-      console.log(decode);
+
       const user = await User.findOneAndUpdate(
         { email: decode.email },
         { token: null },
@@ -94,7 +85,7 @@ const getData = async (req, res, next) => {
     if (isLogin) {
       await jwt.verify(token, process.env.refToken, async (err, decode) => {
         console.log({ decode, token });
-        if (err) return res.status(403).json({ decode });
+        if (err) return res.sendStatus(403);
         const result = await User.findOne({ email: decode.email }).select(
           "email username role"
         );

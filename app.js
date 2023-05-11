@@ -24,10 +24,10 @@ app.use(productsRouter);
 app.use(categoriesRouter);
 app.use(tagsRouter);
 app.use(userRouter);
+app.use(verifyToken);
 app.use(cartRouter);
 app.use(invoiceRouter);
 app.use(addressRouter);
-app.use(verifyToken);
 
 // error handler
 
